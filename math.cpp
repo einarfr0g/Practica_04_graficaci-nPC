@@ -42,7 +42,6 @@ public:
         Vector3* result = new Vector3;
         Vector3 suma = v.add((*this),v);
         *result = suma ;
-        cout<<"Componente x: "<< to_string((*result).x) <<" Componente y: "<< to_string((*result).y) <<" Componente z: "<< to_string((*result).z) <<"\n";
         return (*result);
     }
 
@@ -51,7 +50,10 @@ public:
      * @brief Clona el vector actual.
      * @return Copia del vector actual.
      */
-    Vector3 clone() const;
+    Vector3 clone() const{
+        Vector3 clon = Vector3((*this).x,(*this).y,(*this).z);
+        return clon;
+    }
 
     /** 
      * @brief Producto cruz de dos vectores.
@@ -59,7 +61,13 @@ public:
      * @param v Segundo vector.
      * @return Vector resultante del producto cruz.
      */
-    static Vector3 cross(const Vector3& u, const Vector3& v);
+    static Vector3 cross(const Vector3& u, const Vector3& v){
+        double cross_x = (u.y)*(v.z) - (u.z)*(v.y);
+        double cross_y = (u.z)*(v.x) - (u.x)*(v.z);
+        double cross_z = (u.x)*(v.y) - (u.y)*(v.x);
+        Vector3 cross_vector = Vector3(cross_x,cross_y,cross_z);
+        return cross_vector;
+    }
 
     /** 
      * @brief Distancia euclidiana entre dos vectores.
@@ -67,7 +75,13 @@ public:
      * @param v Segundo vector.
      * @return Distancia euclidiana entre los vectores.
      */
-    static double distance(const Vector3& u, const Vector3& v);
+    static double distance(const Vector3& u, const Vector3& v){
+        double power_2_x = (v.x-u.x)*(v.x-u.x);
+        double power_2_y = (v.y-u.y)*(v.y-u.y);
+        double power_2_z = (v.z-u.z)*(v.z-u.z);
+        double distance = sqrt(power_2_x + power_2_y + power_2_z);
+        return distance;
+    }
 
     /** 
      * @brief Producto punto de dos vectores.
@@ -75,7 +89,10 @@ public:
      * @param v Segundo vector.
      * @return Producto punto de los vectores.
      */
-    static double dot(const Vector3& u, const Vector3& v);
+    static double dot(const Vector3& u, const Vector3& v){
+        double producto = (u.x*v.x)+(u.y*v.y)+(u.z*v.z);
+        return producto;
+    }
 
     /** 
      * @brief Comprueba si dos vectores son aproximadamente iguales.
@@ -84,7 +101,13 @@ public:
      * @param epsilon Tolerancia para la comparación. Valor por defecto es 0.000001.
      * @return Verdadero si los vectores son aproximadamente iguales.
      */
-    static bool equals(const Vector3& u, const Vector3& v, double epsilon = 0.000001);
+    static bool equals(const Vector3& u, const Vector3& v, double epsilon = 0.000001){
+        bool x_comparation = (abs(u.x-v.x))<epsilon;
+        bool y_comparation = (abs(u.y-v.y))<epsilon;
+        bool z_comparation = (abs(u.z-v.z))<epsilon;
+        bool result = x_comparation && y_comparation && z_comparation;
+        return result;
+    }
 
     /** 
      * @brief Comprueba si dos vectores son exactamente iguales.
@@ -92,13 +115,27 @@ public:
      * @param v Segundo vector.
      * @return Verdadero si los vectores son exactamente iguales.
      */
-    static bool exactEquals(const Vector3& u, const Vector3& v);
+    static bool exactEquals(const Vector3& u, const Vector3& v){
+        bool x_comparation = u.x==v.x;
+        bool y_comparation = u.y==v.y;
+        bool z_comparation = u.z==v.z;
+        bool result = x_comparation && y_comparation && z_comparation;
+        return result;
+    }
 
     /** 
      * @brief Normaliza el vector actual.
      * @return Vector normalizado.
      */
-    Vector3 normalize() const;
+    Vector3 normalize() const{
+        Vector3 zero = Vector3();
+        double norma = Vector3::distance(*this,zero);
+        double x_coor =(*this).x / norma;
+        double y_coor =(*this).y / norma;
+        double z_coor =(*this).z / norma;
+        Vector3 normalized_vector = Vector3(x_coor,y_coor,z_coor);
+
+    }
 
     /** 
      * @brief Asigna nuevos valores al vector.
@@ -106,7 +143,11 @@ public:
      * @param y Componente y del vector. Valor por defecto es 0.0.
      * @param z Componente z del vector. Valor por defecto es 0.0.
      */
-    void set(double x = 0.0, double y = 0.0, double z = 0.0);
+    void set(double x = 0.0, double y = 0.0, double z = 0.0){
+        (*this).x = x;
+        (*this).y = y;
+        (*this).z = z;
+    }
 
     /** 
      * @brief Resta dos vectores.
@@ -114,7 +155,10 @@ public:
      * @param v Segundo vector.
      * @return Vector resultante de la resta.
      */
-    static Vector3 subtract(const Vector3& u, const Vector3& v);
+    static Vector3 subtract(const Vector3& u, const Vector3& v){
+        Vector3 result = Vector3(u.x - v.x, u.y - v.y, u.z - v.z);
+        return result;
+    }
 
     /** 
      * @brief Distancia euclidiana al cuadrado entre dos vectores.
@@ -122,12 +166,20 @@ public:
      * @param v Segundo vector.
      * @return Distancia euclidiana al cuadrado entre los vectores.
      */
-    static double squaredDistance(const Vector3& u, const Vector3& v);
+    static double squaredDistance(const Vector3& u, const Vector3& v){
+        double power_2_x = (v.x-u.x)*(v.x-u.x);
+        double power_2_y = (v.y-u.y)*(v.y-u.y);
+        double power_2_z = (v.z-u.z)*(v.z-u.z);
+        double distance = power_2_x + power_2_y + power_2_z;
+        return distance;
+    }
 
     /** 
      * @brief Asigna el vector a cero.
      */
-    void zero();
+    void zero(){
+        (*this).set();
+    }
 
 public:
     double x, y, z;
