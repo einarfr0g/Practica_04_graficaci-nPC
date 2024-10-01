@@ -1,24 +1,23 @@
 #include "math.cpp"
 
 int main(){
-    Vector4 vec1 = Vector4(500,58,-8,97);
-    Vector4 vec2 = Vector4(-23,15,0.3,-66);
-    Vector4 few = Vector4(0.0000001,0.0000001,0.0000001,0.0000001);
-    cout<<"La coordenada en x es: "<< to_string(vec1.x)<<" La coordenada en y es: "<< to_string(vec1.y)<<" La coordenada en z es: "<< to_string(vec1.z)<<" La coordenada en z es: "<< to_string(vec1.w)<<"\n";
+    Matrix3 mat1 = Matrix3(1.142,78.089,3.1416,2.44,1342.1342,0.123,7.5,-15,-3.1426);
+    cout<<"La matriz1 entrada a00 = "<< to_string(mat1.a00) << " entrada a01 = "<< to_string(mat1.a01)<< " entrada a02 = "<< to_string(mat1.a02)<<"\n"
+    << " entrada a10 = "<< to_string(mat1.a10)<< " entrada a11 = "<< to_string(mat1.a11)<< " entrada a12 = "<< to_string(mat1.a12)<<"\n"
+    << " entrada a20 = "<< to_string(mat1.a20)<< " entrada a21 = "<< to_string(mat1.a21) << " entrada a22 = "<< to_string(mat1.a22)<<"\n";
 
-    Vector4 vec3 = vec1.clone();
+    Matrix3 mat2 = Matrix3(1,2,3,4,5,6,7,8,9);
 
-    vec3 = vec1.normalize();
+    cout<<"La matriz2 entrada a00 = "<< to_string(mat2.a00) << " entrada a01 = "<< to_string(mat2.a01)<< " entrada a02 = "<< to_string(mat2.a02)<<"\n"
+    << " entrada a10 = "<< to_string(mat2.a10)<< " entrada a11 = "<< to_string(mat2.a11)<< " entrada a12 = "<< to_string(mat2.a12)<<"\n"
+    << " entrada a20 = "<< to_string(mat2.a20)<< " entrada a21 = "<< to_string(mat2.a21) << " entrada a22 = "<< to_string(mat2.a22)<<"\n";
 
-    cout<<"La coordenada en x es: "<< to_string(vec3.x)<<" La coordenada en y es: "<< to_string(vec3.y)<<" La coordenada en z es: "<< to_string(vec3.z)<<" La coordenada en z es: "<< to_string(vec3.w)<<"\n";
+    cout<<"El determinante de la matriz es: "<<to_string(mat1.determinant())<<"\n";
 
+    //Matrix3 mat3 = mat1.adjoint(); 
 
-    //cout<<"La coordenada en x es: "<< to_string(vec3.x)<<" La coordenada en y es: "<< to_string(vec3.y)<<" La coordenada en z es: "<< to_string(vec3.z)<<" La coordenada en z es: "<< to_string(vec3.w)<<"\n";
-
-
-
-    //cout<<"¿Los vectores son iguales: "<< to_string(Vector4::exactEquals(vec1,vec3))<<"\n";
-    //cout<<"La distancia es: "<< to_string(Vector4::distance(vec1,vec2))<<"\n";
-    //cout<<"La coordenada en x es: "<< to_string(cruz.x)<<" La coordenada en y es: "<< to_string(cruz.y)<<" La coordenada en z es: "<< to_string(cruz.z)<<"\n";
+    //cout<<"La matriz3 entrada a00 = "<< to_string(mat3.a00) << " entrada a01 = "<< to_string(mat3.a01)<< " entrada a02 = "<< to_string(mat3.a02)<<"\n"
+    //<< " entrada a10 = "<< to_string(mat3.a10)<< " entrada a11 = "<< to_string(mat3.a11)<< " entrada a12 = "<< to_string(mat3.a12)<<"\n"
+    //<< " entrada a20 = "<< to_string(mat3.a20)<< " entrada a21 = "<< to_string(mat3.a21) << " entrada a22 = "<< to_string(mat3.a22)<<"\n";
 
 }

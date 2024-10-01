@@ -375,8 +375,7 @@ public:
      * @param v Segundo vector.
      * @return Vector4 Resultado de la resta de u y v.
      */
-    static Vector4 subtract(const Vector4& u, const Vector4& v);
-    {
+    static Vector4 subtract(const Vector4& u, const Vector4& v){
         Vector4 resta = Vector4(u.x-v.x,u.y-v.y,u.z-v.z,u.w-v.w);
         return resta;
     }
@@ -433,7 +432,21 @@ public:
      */
     Matrix3(double a00 = 1, double a01 = 0, double a02 = 0,
             double a10 = 0, double a11 = 1, double a12 = 0,
-            double a20 = 0, double a21 = 0, double a22 = 1);
+            double a20 = 0, double a21 = 0, double a22 = 1){
+
+                (*this).a00 = a00;
+                (*this).a10 = a10;
+                (*this).a20 = a20;
+
+                (*this).a01 = a01;
+                (*this).a11 = a11;
+                (*this).a21 = a21;
+
+                (*this).a02 = a02;
+                (*this).a12 = a12;
+                (*this).a22 = a22;
+
+            }
 
     /** 
      * @brief Suma de dos matrices.
@@ -441,25 +454,60 @@ public:
      * @param m2 Segunda matriz.
      * @return Matriz resultante de la suma.
      */
-    static Matrix3 add(const Matrix3& m1, const Matrix3& m2);
+    static Matrix3 add(const Matrix3& m1, const Matrix3& m2){
+
+        Matrix3 suma = Matrix3( m1.a00+m2.a00, m1.a01+m2.a01, m1.a02+m2.a02,
+                                m1.a10+m2.a10, m1.a11+m2.a11, m1.a12+m2.a12, 
+                                m1.a20+m2.a20, m1.a21+m2.a21, m1.a22+m2.a22);
+        
+        return suma;
+    }
 
     /** 
      * @brief Calcula la matriz adjoint.
      * @return Matriz adjoint.
      */
-    Matrix3 adjoint() const;
+    Matrix3 adjoint() const{
+        double m00 = ((*this).a11*(*this).a22)-((*this).a12*(*this).a21);
+        double m01 = -(((*this).a01*(*this).a22)-((*this).a02*(*this).a21));
+        double m02 = ((*this).a01*(*this).a12)-((*this).a02*(*this).a11);
+
+        double m10 = -(((*this).a10*(*this).a22)-((*this).a12*(*this).a20));
+        double m11 = ((*this).a00*(*this).a22)-((*this).a02*(*this).a20);
+        double m12 = -(((*this).a00*(*this).a12)-((*this).a02*(*this).a10));
+
+        double m20 = ((*this).a10*(*this).a21)-((*this).a11*(*this).a20);
+        double m21 = -(((*this).a00*(*this).a21)-((*this).a01*(*this).a20));
+        double m22 = ((*this).a00*(*this).a11)-((*this).a01*(*this).a10);
+
+        Matrix3 adjoint = Matrix3(m00, m01, m02, m10, m11, m12, m20, m21, m22);
+
+        return adjoint ;
+
+    }
 
     /** 
      * @brief Clona la matriz actual.
      * @return Copia de la matriz actual.
      */
-    Matrix3 clone() const;
+    Matrix3 clone() const{
+        Matrix3 clone = Matrix3((*this).a00, (*this).a01, (*this).a02, (*this).a10, (*this).a11, (*this).a12, (*this).a20, (*this).a21, (*this).a22);
+
+        return clone;
+    }
 
     /** 
      * @brief Calcula el determinante de la matriz.
      * @return Determinante de la matriz.
      */
-    double determinant() const;
+    double determinant() const{
+
+        long double suma  = ((*this).a00*(*this).a11*(*this).a22) + ((*this).a01*(*this).a12*(*this).a20) + ((*this).a02*(*this).a10*(*this).a21);
+        long double resta =  ((*this).a20*(*this).a11*(*this).a02) + ((*this).a21*(*this).a12*(*this).a00) + ((*this).a22*(*this).a10*(*this).a01);
+        long double det = suma - resta;
+
+        return det;
+    }
 
     /** 
      * @brief Compara dos matrices con un epsilon.
