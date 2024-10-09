@@ -504,6 +504,7 @@ public:
 
         long double suma  = ((*this).a00*(*this).a11*(*this).a22) + ((*this).a01*(*this).a12*(*this).a20) + ((*this).a02*(*this).a10*(*this).a21);
         long double resta =  ((*this).a20*(*this).a11*(*this).a02) + ((*this).a21*(*this).a12*(*this).a00) + ((*this).a22*(*this).a10*(*this).a01);
+
         long double det = suma - resta;
 
         return det;
@@ -516,7 +517,14 @@ public:
      * @param e Epsilon para la comparación.
      * @return Verdadero si las matrices son aproximadamente iguales.
      */
-    static bool equalsWithE(const Matrix3& m1, const Matrix3& m2, double e);
+    static bool equalsWithE(const Matrix3& m1, const Matrix3& m2, double e = 0.000001){
+
+        bool fila_0 = (abs(m1.a00-m2.a00)<e) && (abs(m1.a01-m2.a01)<e) && (abs(m1.a02-m2.a02)<e);
+        bool fila_1 = (abs(m1.a10-m2.a10)<e) && (abs(m1.a11-m2.a11)<e) && (abs(m1.a12-m2.a12)<e);
+        bool fila_2 = (abs(m1.a20-m2.a20)<e) && (abs(m1.a21-m2.a21)<e) && (abs(m1.a22-m2.a22)<e);
+
+        return fila_0 && fila_1 && fila_2; 
+    }
 
     /** 
      * @brief Compara dos matrices con un epsilon predeterminado.
@@ -524,7 +532,16 @@ public:
      * @param m2 Segunda matriz.
      * @return Verdadero si las matrices son aproximadamente iguales.
      */
-    static bool equals(const Matrix3& m1, const Matrix3& m2);
+    static bool equals(const Matrix3& m1, const Matrix3& m2){
+
+        double e = 0.000001;
+
+        bool fila_0 = (abs(m1.a00-m2.a00)<e) && (abs(m1.a01-m2.a01)<e) && (abs(m1.a02-m2.a02)<e);
+        bool fila_1 = (abs(m1.a10-m2.a10)<e) && (abs(m1.a11-m2.a11)<e) && (abs(m1.a12-m2.a12)<e);
+        bool fila_2 = (abs(m1.a20-m2.a20)<e) && (abs(m1.a21-m2.a21)<e) && (abs(m1.a22-m2.a22)<e);
+
+        return fila_0 && fila_1 && fila_2; 
+    }
 
     /** 
      * @brief Compara dos matrices exactamente.
@@ -532,18 +549,65 @@ public:
      * @param m2 Segunda matriz.
      * @return Verdadero si las matrices son exactamente iguales.
      */
-    static bool exactEquals(const Matrix3& m1, const Matrix3& m2);
+    static bool exactEquals(const Matrix3& m1, const Matrix3& m2){
+
+        bool fila_0 = (m1.a00==m2.a00) && (m1.a01==m2.a01) && (m1.a02==m2.a02);
+        bool fila_1 = (m1.a10==m2.a10) && (m1.a11==m2.a11) && (m1.a12==m2.a12);
+        bool fila_2 = (m1.a20==m2.a20) && (m1.a21==m2.a21) && (m1.a22==m2.a22);
+
+        return (fila_0 && fila_1 && fila_2);
+    }
 
     /** 
      * @brief Asigna la matriz a la matriz identidad.
      */
-    void identity();
+    void identity(){
+
+        double a00 = 1; double a01 = 0; double a02 = 0;
+        double a10 = 0; double a11 = 1; double a12 = 0;
+        double a20 = 0; double a21 = 0; double a22 = 1;
+
+        
+        (*this).a00 = a00;
+        (*this).a10 = a10;
+        (*this).a20 = a20;
+        (*this).a01 = a01;
+        (*this).a11 = a11;
+        (*this).a21 = a21;
+        (*this).a02 = a02;
+        (*this).a12 = a12;
+        (*this).a22 = a22;
+
+    }
+
+    /** 
+     * @brief Calcula la transpuesta de la matriz.
+     * @return Matriz transpuesta.
+     */
+    Matrix3 transpose() const{
+        Matrix3 trans = Matrix3((*this).a00,(*this).a10,(*this).a20,(*this).a01,(*this).a11,(*this).a21,(*this).a02,(*this).a12,(*this).a22);
+
+        return trans;
+    }
 
     /** 
      * @brief Calcula la inversa de la matriz.
      * @return Matriz inversa.
      */
-    Matrix3 invert() const;
+    Matrix3 invert() const{
+
+        double escalar = 1.0 / (*this).determinant();
+
+        Matrix3 adj = (*this).adjoint();
+
+        //adj = adj.transpose();
+
+        adj = Matrix3(adj.a00 * escalar,adj.a01 * escalar,adj.a02 * escalar,
+                      adj.a10 * escalar,adj.a11 * escalar,adj.a12 * escalar,
+                      adj.a20 * escalar,adj.a21 * escalar,adj.a22 * escalar);
+        
+        return adj;
+    }
 
     /** 
      * @brief Multiplica dos matrices.
@@ -551,7 +615,23 @@ public:
      * @param m2 Segunda matriz.
      * @return Matriz resultante de la multiplicación.
      */
-    static Matrix3 multiply(const Matrix3& m1, const Matrix3& m2);
+    static Matrix3 multiply(const Matrix3& m1, const Matrix3& m2){
+
+        double a00 = m1.a00*m2.a00 + m1.a01*m2.a10 + m1.a02*m2.a20;
+        double a01 = m1.a00*m2.a01 + m1.a01*m2.a11 + m1.a02*m2.a21;
+        double a02 = m1.a00*m2.a02 + m1.a01*m2.a12 + m1.a02*m2.a22;
+
+        double a10 = m1.a10*m2.a00 + m1.a11*m2.a10 + m1.a12*m2.a20;
+        double a11 = m1.a10*m2.a01 + m1.a11*m2.a11 + m1.a12*m2.a21;
+        double a12 = m1.a10*m2.a02 + m1.a11*m2.a12 + m1.a12*m2.a22;
+
+        double a20 = m1.a20*m2.a00 + m1.a21*m2.a10 + m1.a22*m2.a20;
+        double a21 = m1.a20*m2.a01 + m1.a21*m2.a11 + m1.a22*m2.a21;
+        double a22 = m1.a20*m2.a02 + m1.a21*m2.a12 + m1.a22*m2.a22;
+
+        Matrix3 result =  Matrix3(a00,a01,a02,a10,a11,a12,a20,a21,a22);
+        return result;
+    }
 
     /** 
      * @brief Multiplica una matriz por un escalar.
@@ -559,21 +639,41 @@ public:
      * @param c Escalar.
      * @return Matriz resultante de la multiplicación por el escalar.
      */
-    static Matrix3 multiplyScalar(const Matrix3& m1, double c);
+    static Matrix3 multiplyScalar(const Matrix3& m1, double c){
+        Matrix3 multiplied = Matrix3(m1.a00 * c,m1.a01 * c,m1.a02 * c,
+                                     m1.a10 * c,m1.a11 * c,m1.a12 * c,
+                                     m1.a20 * c,m1.a21 * c,m1.a22 * c);
+        
+        return multiplied;
+    }
 
     /** 
      * @brief Multiplica una matriz por un vector.
      * @param v Vector a multiplicar.
      * @return Vector resultante de la multiplicación.
      */
-    Vector3 multiplyVector(const Vector3& v) const;
+    Vector3 multiplyVector(const Vector3& v) const{
+
+        double a1 = (*this).a00*v.x + (*this).a01*v.y + (*this).a02*v.z;
+        double a2 = (*this).a10*v.x + (*this).a11*v.y + (*this).a12*v.z;
+        double a3 = (*this).a20*v.x + (*this).a21*v.y + (*this).a22*v.z;
+
+        Vector3 result = Vector3(a1,a2,a3);
+         return result;
+    }
 
     /** 
      * @brief Crea una matriz de rotación.
      * @param theta Ángulo de rotación en radianes.
      * @return Matriz de rotación.
      */
-    static Matrix3 rotate(double theta);
+    static Matrix3 rotate(double theta){
+        Matrix3 rot_matrix = Matrix3(cos(theta),sin(theta),0
+                                    -sin(theta),cos(theta),0,
+                                    0,0,1); 
+
+        return rot_matrix;
+    }
 
     /** 
      * @brief Crea una matriz de escalamiento.
@@ -581,7 +681,13 @@ public:
      * @param sy Factor de escala en el eje y.
      * @return Matriz de escalamiento.
      */
-    static Matrix3 scale(double sx, double sy);
+    static Matrix3 scale(double sx, double sy){
+        Matrix3 scale_matrix = Matrix3(sx,0,0,
+                                       0,sy,0,
+                                       0,0,1); 
+
+        return scale_matrix;
+    }
 
     /** 
      * @brief Asigna nuevos valores a la matriz.
@@ -595,7 +701,21 @@ public:
      * @param a21 Elemento en la posición (2,1).
      * @param a22 Elemento en la posición (2,2).
      */
-    void set();
+    void set(double a00 = 1, double a01 = 0, double a02 = 0,
+            double a10 = 0, double a11 = 1, double a12 = 0,
+            double a20 = 0, double a21 = 0, double a22 = 1){
+        //
+        (*this).a00 = a00;
+        (*this).a10 = a10;
+        (*this).a20 = a20;
+        (*this).a01 = a01;
+        (*this).a11 = a11;
+        (*this).a21 = a21;
+        (*this).a02 = a02;
+        (*this).a12 = a12;
+        (*this).a22 = a22;
+
+    }
 
     /** 
      * @brief Resta dos matrices.
@@ -603,7 +723,13 @@ public:
      * @param m2 Segunda matriz.
      * @return Matriz resultante de la resta.
      */
-    static Matrix3 subtract(const Matrix3& m1, const Matrix3& m2);
+    static Matrix3 subtract(const Matrix3& m1, const Matrix3& m2){
+        Matrix3 resta = Matrix3( m1.a00-m2.a00, m1.a01-m2.a01, m1.a02-m2.a02,
+                                m1.a10-m2.a10, m1.a11-m2.a11, m1.a12-m2.a12, 
+                                m1.a20-m2.a20, m1.a21-m2.a21, m1.a22-m2.a22);
+
+        return resta;
+    }
 
     /** 
      * @brief Crea una matriz de translación.
@@ -611,13 +737,14 @@ public:
      * @param ty Desplazamiento en el eje y.
      * @return Matriz de translación.
      */
-    static Matrix3 translate(double tx, double ty);
+    static Matrix3 translate(double tx, double ty){
+        Matrix3 scale_matrix = Matrix3(1,0,tx,
+                                       0,1,ty,
+                                       0,0,1); 
 
-    /** 
-     * @brief Calcula la transpuesta de la matriz.
-     * @return Matriz transpuesta.
-     */
-    Matrix3 transpose() const;
+        return scale_matrix;
+    }
+
 };
 
 
