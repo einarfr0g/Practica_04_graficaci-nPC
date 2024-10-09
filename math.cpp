@@ -783,7 +783,28 @@ public:
         double a10 = 0, double a11 = 1, double a12 = 0, double a13 = 0,
         double a20 = 0, double a21 = 0, double a22 = 1, double a23 = 0,
         double a30 = 0, double a31 = 0, double a32 = 0, double a33 = 1
-    );
+    ){
+        (*this).a00 = a00;
+        (*this).a01 = a01;
+        (*this).a02 = a02;
+        (*this).a03 = a03;
+
+        (*this).a10 = a10;
+        (*this).a11 = a11;
+        (*this).a12 = a12;
+        (*this).a13 = a13;
+
+        (*this).a20 = a20;
+        (*this).a21 = a21;
+        (*this).a22 = a22;
+        (*this).a23 = a23;
+
+        (*this).a30 = a30;
+        (*this).a31 = a31;
+        (*this).a32 = a32;
+        (*this).a33 = a33;
+        
+    }
 
     /**
      * @brief Devuelve la suma de dos matrices.
@@ -791,13 +812,78 @@ public:
      * @param m2 Segunda matriz.
      * @return Matrix4 Resultado de la suma de m1 y m2.
      */
-    static Matrix4 add(const Matrix4& m1, const Matrix4& m2);
-
+    static Matrix4 add(const Matrix4& m1, const Matrix4& m2){
+        Matrix4 suma = Matrix4(
+        m1.a00+m2.a00, m1.a01+m2.a01,m1.a02+m2.a02, m1.a03+m2.a03,
+        m1.a10+m2.a10, m1.a11+m2.a11,m1.a12+m2.a12, m1.a13+m2.a13,
+        m1.a20+m2.a20, m1.a21+m2.a21,m1.a22+m2.a22, m1.a23+m2.a23,
+        m1.a30+m2.a30, m1.a31+m2.a31,m1.a32+m2.a32, m1.a33+m2.a33
+        );
+        return suma;
+    }
     /**
      * @brief Devuelve la matriz adjunta de la matriz actual.
      * @return Matrix4 Matriz adjunta.
      */
-    Matrix4 adjoint() const;
+    Matrix4 adjoint() const{
+        double a00 = (*this).a11*(*this).a22*(*this).a33 + (*this).a12*(*this).a23*(*this).a31 + (*this).a13*(*this).a21*(*this).a32
+                   -((*this).a13*(*this).a22*(*this).a31 + (*this).a12*(*this).a21*(*this).a33 + (*this).a11*(*this).a23*(*this).a32);
+
+        double a01 = (*this).a10*(*this).a22*(*this).a33 + (*this).a12*(*this).a23*(*this).a30 + (*this).a13*(*this).a20*(*this).a32
+                   -((*this).a13*(*this).a22*(*this).a30 + (*this).a12*(*this).a21*(*this).a33 + (*this).a11*(*this).a23*(*this).a32);
+
+        double a02 = (*this).a10*(*this).a21*(*this).a33 + (*this).a11*(*this).a23*(*this).a30 + (*this).a13*(*this).a20*(*this).a31
+                   -((*this).a13*(*this).a21*(*this).a30 + (*this).a11*(*this).a20*(*this).a33 + (*this).a10*(*this).a23*(*this).a31);
+
+        double a03 = (*this).a10*(*this).a21*(*this).a32 + (*this).a11*(*this).a22*(*this).a30 + (*this).a12*(*this).a20*(*this).a31
+                   -((*this).a12*(*this).a21*(*this).a30 + (*this).a11*(*this).a20*(*this).a32 + (*this).a10*(*this).a22*(*this).a31);
+
+        double a10 = (*this).a01*(*this).a22*(*this).a33 + (*this).a02*(*this).a23*(*this).a31 + (*this).a12*(*this).a20*(*this).a31
+                   -((*this).a12*(*this).a21*(*this).a30 + (*this).a11*(*this).a20*(*this).a32 + (*this).a10*(*this).a22*(*this).a31);
+
+        double a11 = (*this).a01*(*this).a22*(*this).a33 + (*this).a12*(*this).a23*(*this).a30 + (*this).a03*(*this).a20*(*this).a32
+                   -((*this).a03*(*this).a22*(*this).a31 + (*this).a02*(*this).a20*(*this).a33 + (*this).a00*(*this).a23*(*this).a32);
+
+        double a12 = (*this).a00*(*this).a21*(*this).a33 + (*this).a01*(*this).a23*(*this).a30 + (*this).a03*(*this).a20*(*this).a32
+                   -((*this).a03*(*this).a21*(*this).a30 + (*this).a01*(*this).a20*(*this).a33 + (*this).a00*(*this).a23*(*this).a31);
+
+        double a13 = (*this).a00*(*this).a21*(*this).a32 + (*this).a01*(*this).a22*(*this).a30 + (*this).a02*(*this).a20*(*this).a31
+                   -((*this).a02*(*this).a21*(*this).a30 + (*this).a01*(*this).a20*(*this).a32 + (*this).a00*(*this).a22*(*this).a31);
+        
+        double a20 = (*this).a01*(*this).a12*(*this).a33 + (*this).a02*(*this).a13*(*this).a31 + (*this).a03*(*this).a11*(*this).a32
+                   -((*this).a03*(*this).a12*(*this).a31 + (*this).a02*(*this).a11*(*this).a33 + (*this).a01*(*this).a13*(*this).a32);
+
+        double a21 = (*this).a00*(*this).a12*(*this).a33 + (*this).a02*(*this).a13*(*this).a30 + (*this).a03*(*this).a10*(*this).a32
+                   -((*this).a03*(*this).a12*(*this).a30 + (*this).a02*(*this).a10*(*this).a33 + (*this).a00*(*this).a13*(*this).a32);
+
+        double a22 = (*this).a00*(*this).a11*(*this).a33 + (*this).a01*(*this).a13*(*this).a30 + (*this).a03*(*this).a10*(*this).a31
+                   -((*this).a03*(*this).a11*(*this).a30 + (*this).a01*(*this).a10*(*this).a33 + (*this).a00*(*this).a13*(*this).a31);
+
+        double a23 = (*this).a00*(*this).a11*(*this).a32 + (*this).a01*(*this).a12*(*this).a30 + (*this).a02*(*this).a10*(*this).a31
+                   -((*this).a02*(*this).a11*(*this).a30 + (*this).a01*(*this).a10*(*this).a32 + (*this).a00*(*this).a12*(*this).a31);
+
+        double a30 = (*this).a01*(*this).a12*(*this).a23 + (*this).a02*(*this).a13*(*this).a21 + (*this).a03*(*this).a11*(*this).a22
+                   -((*this).a03*(*this).a12*(*this).a21 + (*this).a02*(*this).a11*(*this).a23 + (*this).a01*(*this).a13*(*this).a22);
+
+        double a31 = (*this).a00*(*this).a12*(*this).a23 + (*this).a02*(*this).a13*(*this).a20 + (*this).a03*(*this).a10*(*this).a33
+                   -((*this).a03*(*this).a12*(*this).a20 + (*this).a02*(*this).a10*(*this).a23 + (*this).a00*(*this).a13*(*this).a22);
+
+        double a32 = (*this).a00*(*this).a11*(*this).a23 + (*this).a01*(*this).a13*(*this).a20 + (*this).a03*(*this).a10*(*this).a21
+                   -((*this).a03*(*this).a11*(*this).a20 + (*this).a01*(*this).a10*(*this).a23 + (*this).a00*(*this).a13*(*this).a21);
+
+        double a33 = (*this).a00*(*this).a11*(*this).a22 + (*this).a01*(*this).a12*(*this).a20 + (*this).a02*(*this).a10*(*this).a21
+                   -((*this).a02*(*this).a11*(*this).a20 + (*this).a01*(*this).a10*(*this).a22 + (*this).a00*(*this).a12*(*this).a21); 
+
+        Matrix4 result = Matrix4(
+         a00,-a01,a02,-a03,
+         -a10,a11,-a12,a13,
+         a20,-a21,a22,-a23,
+         -a30,a31,-a32,a33
+        );       
+        
+        return result; 
+
+    }
 
     /**
      * @brief Devuelve una copia del objeto Matrix4.
