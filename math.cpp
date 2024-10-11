@@ -826,11 +826,12 @@ public:
      * @return Matrix4 Matriz adjunta.
      */
     Matrix4 adjoint() const{
+        //acá saqué los determinantes pero lo indices están mal solo son los indices transpuestos
         double a00 = (*this).a11*(*this).a22*(*this).a33 + (*this).a12*(*this).a23*(*this).a31 + (*this).a13*(*this).a21*(*this).a32
                    -((*this).a13*(*this).a22*(*this).a31 + (*this).a12*(*this).a21*(*this).a33 + (*this).a11*(*this).a23*(*this).a32);
 
         double a01 = (*this).a10*(*this).a22*(*this).a33 + (*this).a12*(*this).a23*(*this).a30 + (*this).a13*(*this).a20*(*this).a32
-                   -((*this).a13*(*this).a22*(*this).a30 + (*this).a12*(*this).a21*(*this).a33 + (*this).a11*(*this).a23*(*this).a32);
+                   -((*this).a13*(*this).a22*(*this).a30 + (*this).a12*(*this).a20*(*this).a33 + (*this).a10*(*this).a23*(*this).a32);
 
         double a02 = (*this).a10*(*this).a21*(*this).a33 + (*this).a11*(*this).a23*(*this).a30 + (*this).a13*(*this).a20*(*this).a31
                    -((*this).a13*(*this).a21*(*this).a30 + (*this).a11*(*this).a20*(*this).a33 + (*this).a10*(*this).a23*(*this).a31);
@@ -838,13 +839,13 @@ public:
         double a03 = (*this).a10*(*this).a21*(*this).a32 + (*this).a11*(*this).a22*(*this).a30 + (*this).a12*(*this).a20*(*this).a31
                    -((*this).a12*(*this).a21*(*this).a30 + (*this).a11*(*this).a20*(*this).a32 + (*this).a10*(*this).a22*(*this).a31);
 
-        double a10 = (*this).a01*(*this).a22*(*this).a33 + (*this).a02*(*this).a23*(*this).a31 + (*this).a12*(*this).a20*(*this).a31
-                   -((*this).a12*(*this).a21*(*this).a30 + (*this).a11*(*this).a20*(*this).a32 + (*this).a10*(*this).a22*(*this).a31);
+        double a10 = (*this).a01*(*this).a22*(*this).a33 + (*this).a02*(*this).a23*(*this).a31 + (*this).a03*(*this).a21*(*this).a32
+                   -((*this).a03*(*this).a22*(*this).a31 + (*this).a02*(*this).a21*(*this).a33 + (*this).a01*(*this).a23*(*this).a32);
 
-        double a11 = (*this).a01*(*this).a22*(*this).a33 + (*this).a12*(*this).a23*(*this).a30 + (*this).a03*(*this).a20*(*this).a32
-                   -((*this).a03*(*this).a22*(*this).a31 + (*this).a02*(*this).a20*(*this).a33 + (*this).a00*(*this).a23*(*this).a32);
+        double a11 = (*this).a00*(*this).a22*(*this).a33 + (*this).a02*(*this).a23*(*this).a30 + (*this).a03*(*this).a20*(*this).a32
+                   -((*this).a03*(*this).a22*(*this).a30 + (*this).a02*(*this).a20*(*this).a33 + (*this).a00*(*this).a23*(*this).a32);
 
-        double a12 = (*this).a00*(*this).a21*(*this).a33 + (*this).a01*(*this).a23*(*this).a30 + (*this).a03*(*this).a20*(*this).a32
+        double a12 = (*this).a00*(*this).a21*(*this).a33 + (*this).a01*(*this).a23*(*this).a30 + (*this).a03*(*this).a20*(*this).a31
                    -((*this).a03*(*this).a21*(*this).a30 + (*this).a01*(*this).a20*(*this).a33 + (*this).a00*(*this).a23*(*this).a31);
 
         double a13 = (*this).a00*(*this).a21*(*this).a32 + (*this).a01*(*this).a22*(*this).a30 + (*this).a02*(*this).a20*(*this).a31
@@ -865,7 +866,7 @@ public:
         double a30 = (*this).a01*(*this).a12*(*this).a23 + (*this).a02*(*this).a13*(*this).a21 + (*this).a03*(*this).a11*(*this).a22
                    -((*this).a03*(*this).a12*(*this).a21 + (*this).a02*(*this).a11*(*this).a23 + (*this).a01*(*this).a13*(*this).a22);
 
-        double a31 = (*this).a00*(*this).a12*(*this).a23 + (*this).a02*(*this).a13*(*this).a20 + (*this).a03*(*this).a10*(*this).a33
+        double a31 = (*this).a00*(*this).a12*(*this).a23 + (*this).a02*(*this).a13*(*this).a20 + (*this).a03*(*this).a10*(*this).a22
                    -((*this).a03*(*this).a12*(*this).a20 + (*this).a02*(*this).a10*(*this).a23 + (*this).a00*(*this).a13*(*this).a22);
 
         double a32 = (*this).a00*(*this).a11*(*this).a23 + (*this).a01*(*this).a13*(*this).a20 + (*this).a03*(*this).a10*(*this).a21
@@ -875,10 +876,10 @@ public:
                    -((*this).a02*(*this).a11*(*this).a20 + (*this).a01*(*this).a10*(*this).a22 + (*this).a00*(*this).a12*(*this).a21); 
 
         Matrix4 result = Matrix4(
-         a00,-a01,a02,-a03,
-         -a10,a11,-a12,a13,
-         a20,-a21,a22,-a23,
-         -a30,a31,-a32,a33
+         a00,-a10,a20,-a30,
+         -a01,a11,-a21,a31,
+         a02,-a12,a22,-a32,
+         -a03,a13,-a23,a33
         );       
         
         return result; 
@@ -889,13 +890,40 @@ public:
      * @brief Devuelve una copia del objeto Matrix4.
      * @return Matrix4 Copia del objeto actual.
      */
-    Matrix4 clone() const;
+    Matrix4 clone() const{
+        Matrix4 clon = Matrix4(
+            (*this).a00,(*this).a01,(*this).a02,(*this).a03,
+            (*this).a10,(*this).a11,(*this).a12,(*this).a13,
+            (*this).a20,(*this).a21,(*this).a22,(*this).a23,
+            (*this).a30,(*this).a31,(*this).a32,(*this).a33
+        );
+
+        return clon;
+
+    }
 
     /**
      * @brief Calcula el determinante de la matriz.
      * @return double Determinante de la matriz.
      */
-    double determinant() const;
+    double determinant() const{
+        double term_1 = ((*this).a00)*((*this).a11*(*this).a22*(*this).a33 + (*this).a12*(*this).a23*(*this).a31 + (*this).a13*(*this).a21*(*this).a32
+                        -((*this).a13*(*this).a22*(*this).a31 + (*this).a12*(*this).a21*(*this).a33 + (*this).a11*(*this).a23*(*this).a32));
+
+        double term_2 = -((*this).a10)*((*this).a01*(*this).a22*(*this).a33 + (*this).a02*(*this).a23*(*this).a31 + (*this).a03*(*this).a21*(*this).a32
+                        -((*this).a03*(*this).a22*(*this).a31 + (*this).a02*(*this).a21*(*this).a33 + (*this).a01*(*this).a23*(*this).a32));
+
+        double term_3 = ((*this).a20)*((*this).a01*(*this).a12*(*this).a33 + (*this).a02*(*this).a13*(*this).a31 + (*this).a03*(*this).a11*(*this).a32
+                        -((*this).a03*(*this).a12*(*this).a31 + (*this).a02*(*this).a11*(*this).a33 + (*this).a01*(*this).a13*(*this).a32));
+
+        double term_4 = -((*this).a30)*((*this).a01*(*this).a12*(*this).a23 + (*this).a02*(*this).a13*(*this).a21 + (*this).a03*(*this).a11*(*this).a22
+                        -((*this).a03*(*this).a12*(*this).a21 + (*this).a02*(*this).a11*(*this).a23 + (*this).a01*(*this).a13*(*this).a22));
+
+        double result = term_1 + term_2 + term_3 + term_4;
+
+        return result;  
+        
+    }
 
     /**
      * @brief Verifica si dos matrices son aproximadamente iguales.
@@ -904,14 +932,36 @@ public:
      * @param epsilon Tolerancia para la comparación.
      * @return bool True si las matrices son aproximadamente iguales, false en caso contrario.
      */
-    static bool equalsWithE(const Matrix4& m1, const Matrix4& m2, double epsilon);
+    static bool equalsWithE(const Matrix4& m1, const Matrix4& m2, double epsilon = 0.000001){
+
+        bool row_0 = (abs(m1.a00-m2.a00)<epsilon) && (abs(m1.a01-m2.a01)<epsilon) && (abs(m1.a02-m2.a02)<epsilon) && (abs(m1.a03-m2.a03)<epsilon);
+
+        bool row_1 = (abs(m1.a10-m2.a10)<epsilon) && (abs(m1.a11-m2.a11)<epsilon) && (abs(m1.a12-m2.a12)<epsilon) && (abs(m1.a13-m2.a13)<epsilon);
+
+        bool row_2 = (abs(m1.a20-m2.a20)<epsilon) && (abs(m1.a21-m2.a21)<epsilon) && (abs(m1.a22-m2.a22)<epsilon) && (abs(m1.a23-m2.a23)<epsilon);
+
+        bool row_3 = (abs(m1.a30-m2.a30)<epsilon) && (abs(m1.a31-m2.a31)<epsilon) && (abs(m1.a32-m2.a32)<epsilon) && (abs(m1.a33-m2.a33)<epsilon);
+
+        bool result = row_0 && row_1 && row_2 && row_3;
+
+        return result;
+    }
 
     /**
      * @brief Multiplica la matriz por un escalar.
      * @param scalar Escalar por el cual multiplicar la matriz.
      * @return Matrix4 Resultado de la multiplicación por el escalar.
      */
-    Matrix4 multiplyByScalar(double scalar) const;
+    Matrix4 multiplyByScalar(double scalar) const{
+        Matrix4 multiplied = Matrix4(
+            (*this).a00*scalar,(*this).a01*scalar,(*this).a02*scalar,(*this).a03*scalar,
+            (*this).a10*scalar,(*this).a11*scalar,(*this).a12*scalar,(*this).a13*scalar,
+            (*this).a20*scalar,(*this).a21*scalar,(*this).a22*scalar,(*this).a23*scalar,
+            (*this).a30*scalar,(*this).a31*scalar,(*this).a32*scalar,(*this).a33*scalar
+        );
+
+        return multiplied;
+    }
 
     /**
      * @brief Multiplica dos matrices.
@@ -919,7 +969,16 @@ public:
      * @param m2 Segunda matriz.
      * @return Matrix4 Resultado de la multiplicación de m1 y m2.
      */
-    static Matrix4 multiply(const Matrix4& m1, const Matrix4& m2);
+    static Matrix4 multiply(const Matrix4& m1, const Matrix4& m2){
+        double a00 = m1.a00*m2.a00 + m1.a01*m2.a10 + m1.a02*m2.a20 + m1.a02*m2.a20 + m1.a03*m2.a30;
+
+        double a01 = m1.a00*m2.a01 + m1.a01*m2.a11 + m1.a02*m2.a21 + m1.a02*m2.a21 + m1.a03*m2.a31;
+
+        double a02 = m1.a00*m2.a02 + m1.a01*m2.a12 + m1.a02*m2.a22 + m1.a02*m2.a22 + m1.a03*m2.a32;
+
+        double a03 = m1.a00*m2.a03 + m1.a01*m2.a13 + m1.a02*m2.a23 + m1.a02*m2.a23 + m1.a03*m2.a33;
+        
+    }
 
     /**
      * @brief Invierte la matriz actual.
