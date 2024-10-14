@@ -1169,6 +1169,15 @@ public:
         return Matrix4();
     }
 
+    static Matrix4 viewPort(int wide,double height){
+            Matrix4 mat = Matrix4(
+            wide/2,0,0,wide/2,
+            0,height/2,0,height/2,
+            0,0,1,0,
+            0,0,0,1
+        );
+    }
+
     /**
      * @brief Genera una matriz de vista para una cámara en una posición dada.
      * 
@@ -1179,7 +1188,27 @@ public:
      */
     static Matrix4 lookAt(const Vector3& eye, const Vector3& center, const Vector3& up) {
         // TODO: Implementar la lógica del método.
-        return Matrix4();
+        double aux_scalar = -1.0/Vector3::distance(eye,center);
+        Vector3 w = Vector3::subtract(center,eye);
+
+        w.set(w.x*aux_scalar,w.y*aux_scalar,w.z*aux_scalar);
+
+        Vector3 u = Vector3::cross(w,up);
+
+        aux_scalar = 1/Vector3::distance(u,Vector3());
+
+        Vector3 v = Vector3::cross(w,u);
+
+        Matrix4 mat = Matrix4(
+            u.x,v.x,w.x,eye.x,
+            u.y,v.y,w.y,eye.y,
+            u.z,v.z,w.z,eye.z,
+            0,0,0,1
+        );
+
+        mat = mat.invert();
+
+        return mat;
     }
 
     /**
@@ -1194,7 +1223,13 @@ public:
      * @return Matrix4 Matriz 4x4 que define la proyección ortográfica.
      */
     static Matrix4 orthographic(double left, double right, double bottom, double top, double near, double far) {
-        return Matrix4();
+        Matrix4 mat = Matrix4(
+            2/(right-left),0,0,(-right-left)/(right-left),
+            0,2/(top-bottom),0,(-top-bottom)/(top-bottom),
+            0,0,2/(near-far),(-near-far)/(near-far),
+            0,0,0,1
+        );
+        return mat;
     }
 
     /**
@@ -1207,7 +1242,7 @@ public:
      * @return Matrix4 Matriz 4x4 que define la proyección de perspectiva.
      */
     static Matrix4 perspective(double fovy, double aspect, double near, double far) {
-
+        
         return Matrix4();
     }
 
