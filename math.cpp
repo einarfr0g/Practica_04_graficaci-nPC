@@ -1155,21 +1155,6 @@ public:
     // Métodos estáticos de matrices de transformaciones de cámara
 
     /**
-     * @brief Genera una matriz de proyección de perspectiva utilizando un frustum.
-     * 
-     * @param left Límite izquierdo del frustum.
-     * @param right Límite derecho del frustum.
-     * @param bottom Límite inferior del frustum.
-     * @param top Límite superior del frustum.
-     * @param near Distancia del plano cercano.
-     * @param far Distancia del plano lejano.
-     * @return Matrix4 Matriz 4x4 que define el frustum.
-     */
-    static Matrix4 frustum(double left, double right, double bottom, double top, double near, double far) {
-        return Matrix4();
-    }
-
-    /**
      * @brief Genera la matríz que lleva los puntos en volumen canonico de graficación a coordenadas de pixeles en la pantalla
      * @param wide largo de la resolución
      * @param height alto de la resolucion
@@ -1234,12 +1219,14 @@ public:
      * @return Matrix4 Matriz 4x4 que define la proyección ortográfica.
      */
     static Matrix4 orthographic(double left, double right, double bottom, double top, double near, double far) {
+
         Matrix4 mat = Matrix4(
             2.0/(right-left),0,0,-(right+left)/(right-left),
             0,2.0/(top-bottom),0,-(top+bottom)/(top-bottom),
             0,0,2.0/(near-far),-(near+far)/(near-far),
             0,0,0,1
         );
+
         return mat;
     }
 
@@ -1252,14 +1239,16 @@ public:
      * @param far Distancia del plano lejano.
      * @return Matrix4 Matriz 4x4 que define la proyección de perspectiva.
      */
-    static Matrix4 perspective( double near, double far) {
+    static Matrix4 perspective(double fovy,double aspect, double near, double far) {
+
         Matrix4 mat = Matrix4(
-            near,0,0,0,
-            0,near,0,0,
-            0,0,near+far,-near*far,
+            1/aspect*tan((fovy/2)*(M_PI/180)),0,0,0,
+            0,1/tan((fovy/2)*(M_PI/180)),0,0,
+            0,0,-(far+near/far-near),-((2*far*near)/far-near),
             0,0,1,0
         );
-        return Matrix4();
+
+        return mat;
     }
 
     /**
@@ -1269,8 +1258,13 @@ public:
      * @return Matrix4 Matriz 4x4 que define la rotación alrededor del eje X.
      */
     static Matrix4 rotateX(double theta) {
-
-        return Matrix4( );
+        Matrix4 mat = Matrix4(
+            1,0,0,0,
+            0,cos(theta),-sin(theta),0,
+            0,sin(theta),cos(theta),0,
+            0,0,0,1
+        );
+        return mat;
     }
 
     /**
@@ -1280,8 +1274,13 @@ public:
      * @return Matrix4 Matriz 4x4 que define la rotación alrededor del eje Y.
      */
     static Matrix4 rotateY(double theta) {
-
-        return Matrix4();
+        Matrix4 mat = Matrix4(
+            cos(theta),0,sin(theta),0,
+            0,1,0,0,
+            -sin(theta),0,cos(theta),0,
+            0,0,0,1
+        );
+        return mat;
     }
 
         /**
@@ -1311,7 +1310,14 @@ public:
      * @return Matrix4 Matriz 4x4 que define el escalado.
      */
     static Matrix4 scale(double x, double y, double z) {
-        return Matrix4();
+        Matrix4 mat = Matrix4(
+            x,0,0,0,
+            0,y,0,0,
+            0,0,z,0,
+            0,0,0,1
+        );
+
+        return mat;
     }
 
     /**
@@ -1323,15 +1329,22 @@ public:
      * @return Matrix4 Matriz 4x4 que define la traslación.
      */
     static Matrix4 translate(double x, double y, double z) {
-        return Matrix4();
+        Matrix4 mat = Matrix4(
+            1,0,0,x,
+            0,1,0,y,
+            0,0,1,z,
+            0,0,0,1
+        );
+
+        return mat;
     }
 
 
             
 };
 
-/**
-//Aqui empiezan las pruebas
+
+/*Aqui empiezan las pruebas
 int main() {
     // Pruebas para Vector3
     cout << "Pruebas para Vector3:" << endl;
@@ -1527,8 +1540,4 @@ int main() {
     cout << " " << result.a30 << " " << result.a31 << " " << result.a32 << " " << result.a33 << endl;
 
     return 0;
-}
-
-*/
-
-
+}*/
