@@ -1169,6 +1169,12 @@ public:
         return Matrix4();
     }
 
+    /**
+     * @brief Genera la matríz que lleva los puntos en volumen canonico de graficación a coordenadas de pixeles en la pantalla
+     * @param wide largo de la resolución
+     * @param height alto de la resolucion
+     * @return Matrix4 Matriz 4x4 viewPort
+     */
     static Matrix4 viewPort(int wide,double height){
             Matrix4 mat = Matrix4(
             wide/2,0,0,wide/2,
@@ -1176,6 +1182,7 @@ public:
             0,0,1,0,
             0,0,0,1
         );
+        return mat;
     }
 
     /**
@@ -1188,14 +1195,18 @@ public:
      */
     static Matrix4 lookAt(const Vector3& eye, const Vector3& center, const Vector3& up) {
         // TODO: Implementar la lógica del método.
-        double aux_scalar = -1.0/Vector3::distance(eye,center);
+        
         Vector3 w = Vector3::subtract(center,eye);
+
+        double aux_scalar = -1.0/Vector3::distance(Vector3(),w);
 
         w.set(w.x*aux_scalar,w.y*aux_scalar,w.z*aux_scalar);
 
         Vector3 u = Vector3::cross(w,up);
 
         aux_scalar = 1/Vector3::distance(u,Vector3());
+
+        u.set(u.x*aux_scalar,u.y*aux_scalar,u.z*aux_scalar);
 
         Vector3 v = Vector3::cross(w,u);
 
@@ -1224,9 +1235,9 @@ public:
      */
     static Matrix4 orthographic(double left, double right, double bottom, double top, double near, double far) {
         Matrix4 mat = Matrix4(
-            2/(right-left),0,0,(-right-left)/(right-left),
-            0,2/(top-bottom),0,(-top-bottom)/(top-bottom),
-            0,0,2/(near-far),(-near-far)/(near-far),
+            2.0/(right-left),0,0,-(right+left)/(right-left),
+            0,2.0/(top-bottom),0,-(top+bottom)/(top-bottom),
+            0,0,2.0/(near-far),-(near+far)/(near-far),
             0,0,0,1
         );
         return mat;
@@ -1241,8 +1252,13 @@ public:
      * @param far Distancia del plano lejano.
      * @return Matrix4 Matriz 4x4 que define la proyección de perspectiva.
      */
-    static Matrix4 perspective(double fovy, double aspect, double near, double far) {
-        
+    static Matrix4 perspective( double near, double far) {
+        Matrix4 mat = Matrix4(
+            near,0,0,0,
+            0,near,0,0,
+            0,0,near+far,-near*far,
+            0,0,1,0
+        );
         return Matrix4();
     }
 
@@ -1274,9 +1290,15 @@ public:
      * @param Vector3 v
      * @return Matrix4 Matriz 4x4 que define la rotación alrededor del eje z.
      */
-    static Matrix4 rotateZ(Vector3 v) {
+    static Matrix4 rotateZ(double theta) {
+        Matrix4 mat = Matrix4(
+            cos(theta),-sin(theta),0,0,
+            sin(theta),cos(theta),0,0,
+            0,0,1,0,
+            0,0,0,1
+        );
 
-        return Matrix4( );
+        return mat;
     }
 
 

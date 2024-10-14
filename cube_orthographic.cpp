@@ -27,8 +27,16 @@ int put_pixxel(int x,int y,sf::RenderWindow& window, sf::Color color = sf::Color
 void Bresenham_horizontal(int x0,int y0,int x1,int y1,sf::RenderWindow& window , sf::Color color = sf::Color::White){
 
     if(x0>x1){
-        x0,x1 = x1,x0;
-        y0,y1 = y1,y0;
+
+        int aux = x0;
+        x0 = x1;
+        x1 = aux;
+
+        aux = y0;
+
+        y0 = y1;
+        y1 = aux;
+        
     }
 
     int current_y=0;
@@ -74,8 +82,16 @@ void Bresenham_horizontal(int x0,int y0,int x1,int y1,sf::RenderWindow& window ,
 
 void Bresenham_vertical(int x0,int y0,int x1,int y1,sf::RenderWindow& window , sf::Color color = sf::Color::White){
     if(y0>y1){
-        y0,y1 = y1,y0;
-        x0,x1 = x1,x0;
+        
+        int aux = x0;
+        x0 = x1;
+        x1 = aux;
+
+        aux = y0;
+
+        y0 = y1;
+        y1 = aux;
+
     }
 
     int current_x=0;
@@ -180,44 +196,82 @@ void bezzier_curve(int x0,int y0,int x1,int y1,int x2,int y2,sf::RenderWindow& w
 
 int main()
 {   
-    int height = 400;
-    int weight = 400;
+    int height = 720;
+    int weight = 720;
 
     sf::RenderWindow window(sf::VideoMode(height,weight),"práctica 2",sf::Style::Default);
     window.setFramerateLimit(30);
+    double theta = 1; 
 
     while(window.isOpen())
     {
+
         sf::Event event;
         while (window.pollEvent(event)){
             if (event.type == sf::Event::Closed)
                 window.close();
         }
 
+        window.clear();
+
         std::vector <Vector4> puntos;
 
-        puntos[0] = Vector4(1,1,1,1);
-        puntos[1] = Vector4(1,1,-1,1);
-        puntos[2] = Vector4(1,-1,-1,1);
-        puntos[3] = Vector4(-1,-1,-1,1);
-        puntos[4] = Vector4(-1,1,1,1);
-        puntos[5] = Vector4(-1,1,-1,1);
-        puntos[6] = Vector4(1,1,-1,1);
-        puntos[7] = Vector4(1,-1,1,1);
+        puntos.push_back(Vector4(1,1,1,1));
+        puntos.push_back(Vector4(1,1,-1,1));
+        puntos.push_back(Vector4(1,-1,-1,1));
+        puntos.push_back(Vector4(-1,-1,-1,1));
+        puntos.push_back(Vector4(-1,1,1,1));
+        puntos.push_back(Vector4(-1,1,-1,1));
+        puntos.push_back(Vector4(-1,-1,1,1));
+        puntos.push_back(Vector4(1,-1,1,1));
 
-        Vector3 camera = Vector3(5,5,5);
+        Vector3 camera = Vector3(3,3,3);
+
+        Matrix4 RotationMatrix = Matrix4::rotateZ(theta);
+
+        for(int i=0; i<8;i++){
+            puntos[i] = RotationMatrix.multiplyVector(puntos[i]);
+        }
+        //Matrix4::orthographic(-2,2,-3,3,2,8)
+        //Matrix4::viewPort(720,720)
+
+        Matrix4 Matriz_ort_camera = Matrix4::multiply(Matrix4::orthographic(-2,2,-3,3,2,8),Matrix4::lookAt(camera,Vector3(),Vector3(0,0,1)));
+
+        Matrix4 final_tranformation = Matrix4::multiply(Matrix4::viewPort(720,720),Matriz_ort_camera);
+
+        //final_tranformation = Matrix4::multiply(Matrix4::viewPort(720,720),final_tranformation);
 
         window.clear();
 
-        Matrix4 Matriz_ort_camera = Matrix4::multiply(Matrix4::orthographic(2,2,3,3,2,8),Matrix4::lookAt(camera,Vector3(),Vector3(0,0,1)));
+        Vector4 aux = Vector4();
+        std::vector <Vector4> puntos_camara;
 
-        Matrix4 final_tranformation = Matrix4::multiply(Matrix4::viewPort(400,400),Matriz_ort_camera);
-        
-        
+        for(Vector4 e : puntos){
+            aux = final_tranformation.multiplyVector(e);
+            puntos_camara.push_back(aux);
+            //put_pixxel(aux.x,aux.y,window);
+        }
 
+        draw_line(puntos_camara[0].x,puntos_camara[0].y,puntos_camara[1].x,puntos_camara[1].y,window);
+        draw_line(puntos_camara[1].x,puntos_camara[1].y,puntos_camara[5].x,puntos_camara[5].y,window);
+        draw_line(puntos_camara[5].x,puntos_camara[5].y,puntos_camara[4].x,puntos_camara[4].y,window);
+        draw_line(puntos_camara[4].x,puntos_camara[4].y,puntos_camara[0].x,puntos_camara[0].y,window);
+
+        draw_line(puntos_camara[7].x,puntos_camara[7].y,puntos_camara[2].x,puntos_camara[2].y,window);
+        draw_line(puntos_camara[2].x,puntos_camara[2].y,puntos_camara[3].x,puntos_camara[3].y,window);
+        draw_line(puntos_camara[3].x,puntos_camara[3].y,puntos_camara[6].x,puntos_camara[6].y,window);
+        draw_line(puntos_camara[6].x,puntos_camara[6].y,puntos_camara[7].x,puntos_camara[7].y,window);
+
+        draw_line(puntos_camara[7].x,puntos_camara[7].y,puntos_camara[0].x,puntos_camara[0].y,window);
+        draw_line(puntos_camara[2].x,puntos_camara[2].y,puntos_camara[1].x,puntos_camara[1].y,window);
+        draw_line(puntos_camara[3].x,puntos_camara[3].y,puntos_camara[5].x,puntos_camara[5].y,window);
+        draw_line(puntos_camara[6].x,puntos_camara[6].y,puntos_camara[4].x,puntos_camara[4].y,window);
+
+        theta = theta + 0.1;
+
+        
         window.display();
-
-
+        
     }
     return 0;
 }
